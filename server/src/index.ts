@@ -1,3 +1,4 @@
+import { _prod_ } from "./constants/globals"
 import "reflect-metadata"
 import { PostResolver } from "./resolver/PostResolver"
 import MyContext from "./types/Context"
@@ -11,6 +12,7 @@ import session from "express-session"
 import cors from "cors"
 import connectRedis from "connect-redis"
 import { config } from "dotenv"
+
 const main = async () => {
   config()
   await createConnection()
@@ -34,17 +36,6 @@ const main = async () => {
       resave: false,
     })
   )
-
-  app.set("trust proxy", process.env.NODE_ENV !== "production")
-  app.set("Access-Control-Allow-Origin", "https://studio.apollographql.com")
-  app.set("Access-Control-Allow-Credentials", true)
-  app.use(
-    cors({
-      credentials: true,
-      origin: "https://studio.apollographql.com/",
-    })
-  )
-
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [userResolver, PostResolver],
@@ -52,15 +43,27 @@ const main = async () => {
     }),
     context: ({ req, res }: MyContext) => ({ req, res }),
   })
+  app.set("trust proxy", !_prod_)
+  // app.use(function (req, res, next) {
+  //   res.header("Access-Control-Allow-Origin", "*")
+  //   res.header(
+  //     "Access-Control-Allow-Headers",
+  //     "Origin, X-Requested-With, Content-Type, Accept"
+  //   )
+  //   next()
+  // })
+  app.use(
+    cors({
+      credentials: true,
+      origin: ["https://studio.apollographql.com", "http://localhost:3000"],
+    })
+  )
 
   await apolloServer.start()
 
   apolloServer.applyMiddleware({
     app,
-    cors: {
-      credentials: true,
-      origin: "https://studio.apollographql.com/",
-    },
+    cors: false,
   })
 
   app.get("/bob", (req, res) => {
@@ -69,8 +72,10 @@ const main = async () => {
     res.send("bob")
   })
 
-  app.listen(4000, () =>
-    console.log("server running on http://localhost:4000/graphql")
+  app.listen(5000, () =>
+    console.log(
+      `🚀 Server ready at http://localhost:5000${apolloServer.graphqlPath}`
+    )
   )
 }
 

@@ -41,7 +41,10 @@ export class userResolver {
   }
 
   @Mutation(() => UserResponse)
-  async register(@Arg("data") input: userInput): Promise<UserResponse> {
+  async register(
+    @Arg("data") input: userInput,
+    @Ctx() { req }: MyContext
+  ): Promise<UserResponse> {
     const isUserAlreadyExits = await User.find({
       where: { email: input.email },
     })
@@ -63,6 +66,9 @@ export class userResolver {
         ...input,
         password: hashedPassword,
       }).save()
+
+      req.session.userId = user.id
+
       return { user }
     } catch (err) {
       return {

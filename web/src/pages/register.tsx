@@ -7,21 +7,16 @@ import { Box, Button } from "@chakra-ui/react"
 import { useMutation } from "urql"
 
 const Register: React.FC = () => {
-  const [, Register] = useMutation(`
-  mutation register($data: userInput!){
+  const [, Register] = useMutation(`mutation register($data: userInput!){
     register(data: $data) {
-       errors {
-      field  
-      message   
-      }
       user {
         email
-      id
-      location {
-        latitude
-        longitude
+        id
+        name
       }
-      name
+      errors {
+        field
+        message
       }
     }
   }
@@ -30,17 +25,18 @@ const Register: React.FC = () => {
     <Wrapper>
       <Formik
         initialValues={{ email: "", password: "" }}
-        onSubmit={async (values) => {
+        onSubmit={async (values, { setErrors }) => {
           console.log(values)
           const res = await Register({
-            ...values,
-            location: {
-              latitude: "adsfadsf",
-              longitude: "asdf",
+            data: {
+              ...values,
+              location: {
+                latitude: "adsfadsf",
+                longitude: "asdf",
+              },
+              name: "something new",
             },
-            name: "asdfadsfadsfdsaf",
           })
-
           console.log(res)
           return false
         }}
