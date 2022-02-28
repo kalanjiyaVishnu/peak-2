@@ -1,4 +1,7 @@
+import { InfoIcon } from "@chakra-ui/icons"
 import {
+  Box,
+  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -18,15 +21,41 @@ const InputField: React.FC<InputFieldProps> = ({
 }) => {
   const [fields, { error }] = useField(props)
   return (
-    <FormControl isInvalid={!!error}>
-      <FormLabel htmlFor={props.name}>{label}</FormLabel>
-      <Input
-        {...fields}
-        id={props.name}
-        placeholder={props.name}
-        type={props.type}
-      />
-      {error && <FormErrorMessage>{error}</FormErrorMessage>}
+    <FormControl isInvalid={!!error} mb="2">
+      <Flex
+        mb="0.5rem"
+        alignItems={"center"}
+        justifyContent="center"
+        textAlign={"center"}
+      >
+        <FormLabel
+          htmlFor={props.name}
+          color="GrayText"
+          minW={"5rem"}
+          textColor="gray.600"
+          fontWeight={"normal"}
+        >
+          {label}
+        </FormLabel>
+
+        <Box>
+          <Input
+            {...fields}
+            id={props.name}
+            placeholder={props.name}
+            type={props.type}
+            color="GrayText"
+            _focus={{
+              color: "black",
+            }}
+          />
+          {error && (
+            <FormErrorMessage ml="auto" w={"fit-content"}>
+              <InfoIcon />{error}
+            </FormErrorMessage>
+          )}
+        </Box>
+      </Flex>
     </FormControl>
   )
 }

@@ -39,12 +39,16 @@ export class Post extends BaseEntity {
   userID: string
 
   @Field()
-  @Column()
+  @Column() 
   title: string
 
-  @Field(() => [String])
-  @Column("text", { array: true, default: ["type something"] })
-  body: string[]
+  @Field()
+  @Column()
+  body: string
+
+  // @Field(() => [String])
+  // @Column("text", { array: true, default: ["type something"] })
+  // body: string[]
 
   @Field()
   @CreateDateColumn()

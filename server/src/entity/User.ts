@@ -1,7 +1,7 @@
 import { Post } from "./Post"
 import { Field, ObjectType } from "type-graphql"
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm"
-import Location from "./Location"
+// import Location from "./Location"
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
@@ -20,9 +20,9 @@ export class User extends BaseEntity {
   @Column({ nullable: false })
   password: string
 
-  @Field(() => Location, { nullable: true })
-  @Column(() => Location)
-  location: Location
+  // @Field(() => Location, { nullable: true })
+  // @Column(() => Location)
+  // location: Location
 
   @Field(() => [Post], { nullable: true })
   @Column("text", { default: [], array: true })

@@ -48,6 +48,16 @@ export class userResolver {
     const isUserAlreadyExits = await User.find({
       where: { email: input.email },
     })
+    if (!input.name) {
+      return {
+        errors: [
+          {
+            field: "name",
+            message: "what do we call you? null",
+          },
+        ],
+      }
+    }
     if (isUserAlreadyExits.length > 0) {
       return {
         errors: [
@@ -59,6 +69,16 @@ export class userResolver {
       }
     }
 
+    if (input.password.length < 4) {
+      return {
+        errors: [
+          {
+            field: "password",
+            message: "password length must be 4",
+          },
+        ],
+      }
+    }
     const hashedPassword = await hash(input.password)
 
     try {

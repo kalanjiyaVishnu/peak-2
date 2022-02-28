@@ -1,54 +1,44 @@
 import * as React from "react"
-import { Container, DarkModeSwitch, Wrapper } from "../components"
+import { DarkModeSwitch, Wrapper } from "../components"
 
 import { Form, Formik } from "formik"
 import InputField from "../components/InputField"
 import { Box, Button } from "@chakra-ui/react"
-import { useMutation } from "urql"
+import { useRouter } from "next/router"
+import { useRegisterMutation } from "../generated/graphql"
+import toErrMap from "../utils/toErrMap"
+import { useEffect } from "react"
 
 const Register: React.FC = () => {
-  const [, Register] = useMutation(`mutation register($data: userInput!){
-    register(data: $data) {
-      user {
-        email
-        id
-        name
-      }
-      errors {
-        field
-        message
-      }
-    }
-  }
-  `)
+  const [, register] = useRegisterMutation()
+  const router = useRouter()
   return (
     <Wrapper>
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ name: "", email: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
-          console.log(values)
-          const res = await Register({
+          const res = await register({
             data: {
               ...values,
-              location: {
-                latitude: "adsfadsf",
-                longitude: "asdf",
-              },
-              name: "something new",
             },
           })
-          console.log(res)
+
+          if (res.data?.register.errors) {
+            setErrors(toErrMap(res.data.register.errors))
+          } else {
+            router.push("/home")
+          }
           return false
         }}
       >
         {({ isSubmitting }) => {
           return (
             <Form>
-              <InputField name="email" label="email" />
+              <InputField name="name" label="name" />
 
-              <Box mt="0.8rem">
-                <InputField name="password" label="password" type="password" />
-              </Box>
+              <InputField name="email" label="email" type="email" />
+
+              <InputField name="password" label="password" type="password" />
 
               <Button
                 isLoading={isSubmitting}
@@ -56,8 +46,9 @@ const Register: React.FC = () => {
                 mt="1rem"
                 size="sm"
                 type="submit"
+                ml="33%"
               >
-                submit
+                register
               </Button>
             </Form>
           )

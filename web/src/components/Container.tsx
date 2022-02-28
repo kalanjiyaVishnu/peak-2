@@ -8,13 +8,14 @@ export default ({ children }: FlexProps) => {
   const color = { light: "black", dark: "white" }
   return (
     <Flex
-    
       direction="column"
       alignItems="center"
       justifyContent="flex-start"
       bg={bgColor[colorMode]}
       color={color[colorMode]}
       height="100vh"
+      minW={"70%"}
+      py="1rem"
     >
       {children}
     </Flex>

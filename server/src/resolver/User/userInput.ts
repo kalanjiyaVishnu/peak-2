@@ -1,4 +1,4 @@
-import { LocationInputs } from "./LocationInputs"
+// import { LocationInputs } from "./LocationInputs"
 // import { IsEmailAlreadyExist } from "./IsEmailAlreadyExist"
 import { Field, InputType } from "type-graphql"
 import { IsEmail, Length } from "class-validator"
@@ -10,7 +10,7 @@ export class userInput {
   name: string
 
   @Field()
-  @IsEmail({ message: "name must be grater than 0" })
+  @IsEmail({ message: "email not valid" })
   email: string
   // @IsEmailAlreadyExist({
   //   message: "User already exists. Choose another name.",
@@ -19,6 +19,6 @@ export class userInput {
   @Field()
   password: string
 
-  @Field({ nullable: true })
-  location: LocationInputs
+  // @Field({ nullable: true })
+  // location: LocationInputs
 }
