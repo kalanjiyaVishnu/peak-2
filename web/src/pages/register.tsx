@@ -3,12 +3,10 @@ import { DarkModeSwitch, Wrapper } from "../components"
 
 import { Form, Formik } from "formik"
 import InputField from "../components/InputField"
-import { Box, Button } from "@chakra-ui/react"
+import { Button } from "@chakra-ui/react"
 import { useRouter } from "next/router"
 import { useRegisterMutation } from "../generated/graphql"
 import toErrMap from "../utils/toErrMap"
-import { useEffect } from "react"
-
 const Register: React.FC = () => {
   const [, register] = useRegisterMutation()
   const router = useRouter()
@@ -44,7 +42,7 @@ const Register: React.FC = () => {
                 isLoading={isSubmitting}
                 colorScheme="teal"
                 mt="1rem"
-                size="sm"
+                size="md"
                 type="submit"
                 ml="33%"
               >

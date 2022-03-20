@@ -1,17 +1,17 @@
-import { _prod_ } from "./constants/globals"
 import "reflect-metadata"
-import { PostResolver } from "./resolver/PostResolver"
-import MyContext from "./types/Context"
-import { redisClient } from "./redis"
-import { userResolver } from "./resolver/userResolver"
 import Express from "express"
 import { ApolloServer } from "apollo-server-express"
+import connectRedis from "connect-redis"
+import cors from "cors"
+import { config } from "dotenv"
+import session from "express-session"
 import { buildSchema } from "type-graphql"
 import { createConnection } from "typeorm"
-import session from "express-session"
-import cors from "cors"
-import connectRedis from "connect-redis"
-import { config } from "dotenv"
+import { _prod_ } from "./constants/globals"
+import { redisClient } from "./redis"
+import { PostResolver } from "./resolver/PostResolver"
+import { userResolver } from "./resolver/userResolver"
+import MyContext from "./types/Context"
 
 const main = async () => {
   config()
@@ -64,6 +64,7 @@ const main = async () => {
   apolloServer.applyMiddleware({
     app,
     cors: false,
+    // path: "/",
   })
 
   app.get("/bob", (req, res) => {

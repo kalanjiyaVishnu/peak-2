@@ -1,11 +1,10 @@
-import { Flex, FlexProps, useColorMode } from "@chakra-ui/react"
+import { Box, Flex, FlexProps, useColorMode } from "@chakra-ui/react"
 import "@fontsource/poppins"
-export default ({ children }: FlexProps) => {
+import { bgColor, color } from "../utils/color"
+
+export default ({ children, ...opts }: FlexProps) => {
   const { colorMode } = useColorMode()
 
-  const bgColor = { light: "gray.50", dark: "#282726" }
-
-  const color = { light: "black", dark: "white" }
   return (
     <Flex
       direction="column"
@@ -13,9 +12,9 @@ export default ({ children }: FlexProps) => {
       justifyContent="flex-start"
       bg={bgColor[colorMode]}
       color={color[colorMode]}
-      height="100vh"
-      minW={"70%"}
+      height="full"
       py="1rem"
+      {...opts}
     >
       {children}
     </Flex>

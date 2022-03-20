@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react"
 import { useField } from "formik"
 import { InputHTMLAttributes } from "react"
+import { getTextColour } from "../utils/color"
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   name: string
   label: string
@@ -32,7 +33,7 @@ const InputField: React.FC<InputFieldProps> = ({
           htmlFor={props.name}
           color="GrayText"
           minW={"5rem"}
-          textColor="gray.600"
+          textColor="gray"
           fontWeight={"normal"}
         >
           {label}
@@ -44,14 +45,17 @@ const InputField: React.FC<InputFieldProps> = ({
             id={props.name}
             placeholder={props.name}
             type={props.type}
-            color="GrayText"
+            color={getTextColour()}
+            bg={"transparent"}
             _focus={{
-              color: "black",
+              textColor: getTextColour(),
+              bg: "transparent",
             }}
           />
           {error && (
             <FormErrorMessage ml="auto" w={"fit-content"}>
-              <InfoIcon />{error}
+              <InfoIcon />
+              {error}
             </FormErrorMessage>
           )}
         </Box>

@@ -2,8 +2,13 @@ import { Box } from "@chakra-ui/react"
 import React from "react"
 type WrapperProps = {
   size?: "small" | "regular"
+  options?: any
 }
-const Wrapper: React.FC<WrapperProps> = ({ children, size = "regular" }) => {
+const Wrapper: React.FC<WrapperProps> = ({
+  children,
+  size = "regular",
+  ...options
+}) => {
   return (
     <Box
       display="flex"
@@ -12,6 +17,7 @@ const Wrapper: React.FC<WrapperProps> = ({ children, size = "regular" }) => {
       justifyContent="center"
       boxSize={size == "small" ? "sm" : "md"}
       w="full"
+      {...options}
     >
       {children}
     </Box>

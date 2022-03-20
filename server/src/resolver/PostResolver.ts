@@ -26,7 +26,7 @@ export class PostResolver {
       return false
     }
 
-    if (inputs.body.length > 40) {
+    if (inputs.body.length > 200) {
       return false
     }
 

@@ -45,9 +45,6 @@ export class userResolver {
     @Arg("data") input: userInput,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
-    const isUserAlreadyExits = await User.find({
-      where: { email: input.email },
-    })
     if (!input.name) {
       return {
         errors: [
@@ -58,6 +55,9 @@ export class userResolver {
         ],
       }
     }
+    const isUserAlreadyExits = await User.find({
+      where: { email: input.email },
+    })
     if (isUserAlreadyExits.length > 0) {
       return {
         errors: [
@@ -102,7 +102,7 @@ export class userResolver {
     }
   }
 
-  @Query(() => UserResponse)
+  @Mutation(() => UserResponse)
   async login(
     @Arg("email") email: string,
     @Arg("password") password: string,
@@ -137,10 +137,10 @@ export class userResolver {
 
   @UseMiddleware(isAuth)
   @FieldResolver()
-  async posts(@Root() parent: User): Promise<Post[] | null> {
+  async posts(@Root() parent: User): Promise<Post[] | []> {
     const posts = await Post.find({ where: { userID: parent.id } })
     if (!posts.length) {
-      return null
+      return []
     }
 
     console.log(parent.posts)
