@@ -13,11 +13,13 @@ const Login: React.FC = () => {
   const [{ fetching, data: MeData }] = useMeQuery()
   const router = useRouter()
   useEffect(() => {
-    setTimeout(() => {
-      if (MeData) {
-        router.push("/home")
-      }
-    }, 3000)
+    console.log("login --> ", MeData)
+
+    // setTimeout(() => {
+    //   if (MeData) {
+    //     router.push("/home")
+    //   }
+    // }, 3000)
     return () => {}
   }, [])
 
@@ -31,7 +33,7 @@ const Login: React.FC = () => {
 
           if (res.data.login.errors) {
             setErrors(toErrMap(res.data.login.errors))
-          } else {
+          } else if (res.data.login.user) {
             router.push("/home")
           }
           return false

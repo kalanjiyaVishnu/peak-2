@@ -23,21 +23,13 @@ export class userResolver {
     return "hello " + name
   }
 
-  @Query(() => UserResponse)
-  async Me(@Ctx() { req }: MyContext): Promise<UserResponse> {
+  @Query(() => User, { nullable: true })
+  async Me(@Ctx() { req }: MyContext) {
     if (!req.session.userId) {
-      return {
-        errors: [{ field: "unauth", message: "you are not authorized" }],
-      }
+      return null
     }
     const user = await User.findOne({ id: req.session.userId })
-    if (!user) {
-      return {
-        errors: [{ field: "user", message: "no user found" }],
-      }
-    }
-
-    return { user }
+    return user
   }
 
   @Mutation(() => UserResponse)
@@ -146,5 +138,19 @@ export class userResolver {
     console.log(parent.posts)
 
     return posts
+  }
+
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { req }: MyContext) {
+    return new Promise((resolve) => {
+      req.session.destroy((err) => {
+        if (err) {
+          console.log("while destroying req session", err)
+        }
+        resolve(true)
+      })
+
+      resolve(false)
+    })
   }
 }

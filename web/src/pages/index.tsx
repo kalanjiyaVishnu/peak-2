@@ -5,28 +5,7 @@ import { Container, DarkModeSwitch, Hero, Main, Nav } from "../components"
 
 const Index = () => (
   <Container>
-    <Nav>
-      {() => (
-        <ButtonGroup spacing="6">
-          <Link href="/register">
-            <Button colorScheme={"gray"} size="sm" _focus={{ outline: "none" }}>
-              Register
-            </Button>
-          </Link>
-          <Link href="/login">
-            <Button
-              colorScheme={"gray"}
-              variant={"outline"}
-              outline="2px"
-              size="sm"
-              _focus={{ outline: "none" }}
-            >
-              Login
-            </Button>
-          </Link>
-        </ButtonGroup>
-      )}
-    </Nav>
+    <Nav />
     <Hero title="A place for 'Confessions'" />
     <Tooltip hasArrow label="we don't know your identity so as everyone">
       <Link href="/login">

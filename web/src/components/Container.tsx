@@ -12,7 +12,7 @@ export default ({ children, ...opts }: FlexProps) => {
       justifyContent="flex-start"
       bg={bgColor[colorMode]}
       color={color[colorMode]}
-      height="full"
+      minH={"100vh"}
       py="1rem"
       {...opts}
     >

@@ -1,41 +1,53 @@
 import {
   Box,
   Button,
+  ButtonGroup,
   Flex,
   Heading,
   Spacer,
   Text,
   useColorMode,
 } from "@chakra-ui/react"
-import { useMeQuery } from "../generated/graphql"
+import { useLogoutMutation, useMeQuery } from "../generated/graphql"
 import { BellIcon } from "@chakra-ui/icons"
 import Link from "next/link"
 import logoDark from "../utils/assets/warning-triangle-dark.png"
 import logoLight from "../utils/assets/warning-triangle-light.png"
 import Image from "next/image"
 interface NavProps {
-  children?: () => JSX.Element
+  children?: JSX.Element
 }
 const Nav: React.FC<NavProps> = ({ children }) => {
   const [{ data, fetching }] = useMeQuery()
-  let rightSide: JSX.Element
+  console.log("in nav --> ",data);
+  
   const { colorMode } = useColorMode()
-  if (!fetching && data.Me.errors) {
+
+  const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
+  let rightSide: JSX.Element
+  if (fetching) {
+  } else if (!data?.Me) {
     rightSide = (
-      <Box>
-        <Link href={"/register"}>
-          <Button colorScheme="teal" mr="4">
-            Sign Up
+      <ButtonGroup spacing="6">
+        <Link href="/register">
+          <Button colorScheme={"gray"} size="sm" _focus={{ outline: "none" }}>
+            Register
           </Button>
         </Link>
-        <Link href={"/login"}>
-          <Button colorScheme="teal">Log in</Button>
+        <Link href="/login">
+          <Button
+            colorScheme={"gray"}
+            variant={"outline"}
+            outline="2px"
+            size="sm"
+            _focus={{ outline: "none" }}
+          >
+            Login
+          </Button>
         </Link>
-      </Box>
+      </ButtonGroup>
     )
-  }
-
-  if (!fetching && data.Me.user) {
+  } else {
     rightSide = (
       <Flex
         alignItems="center"
@@ -48,11 +60,26 @@ const Nav: React.FC<NavProps> = ({ children }) => {
         </svg> */}
         <Box display={"flex"}>
           <Heading fontSize="1.5rem">hey!</Heading>
-          <Text ml="2" fontSize={"1.2rem"}>
-            {data.Me.user.name}
+          <Text ml="2" fontSize={"1.2rem"} color="white">
+            {data.Me.name}
           </Text>
         </Box>
         <BellIcon fontSize={"2xl"} />
+        <Link href="/login">
+          <Button
+            colorScheme={"gray"}
+            variant={"outline"}
+            outline="2px"
+            size="sm"
+            _focus={{ outline: "none" }}
+            onClick={() => {
+              console.log("your are logged out")
+              logout()
+            }}
+          >
+            Log-out
+          </Button>
+        </Link>
       </Flex>
     )
   }
@@ -68,7 +95,6 @@ const Nav: React.FC<NavProps> = ({ children }) => {
       mx="4"
       alignItems={"center"}
       justifyContent="center"
-      bg={"darkblue"}
       zIndex="100"
     >
       <Link href="/">
@@ -88,7 +114,7 @@ const Nav: React.FC<NavProps> = ({ children }) => {
       </Link>
 
       <Spacer />
-      {children()}
+      {rightSide}
     </Flex>
   )
 }

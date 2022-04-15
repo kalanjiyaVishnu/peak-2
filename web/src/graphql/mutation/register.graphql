@@ -1,13 +1,11 @@
-mutation register($data: userInput!){
+mutation register($data: userInput!) {
   register(data: $data) {
-    user {
-      email
-      id
-      name
-    }
     errors {
       field
       message
+    }
+    user {
+      ...UserDefault
     }
   }
 }

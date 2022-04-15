@@ -1,21 +1,7 @@
-query Me {
+query me {
   Me {
-    errors {
-      field
-      message
-    }
-    user {
-      email
-      id
-      name
-      posts {
-        body
-        createdDate
-        id
-        title
-        updatedDate
-        userID
-      }
-    }
+    email
+    id
+    name
   }
 }
