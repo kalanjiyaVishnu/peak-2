@@ -1,4 +1,4 @@
-import { Post } from "./../../entity/Post"
+import { Post } from "./../../entity/post"
 import { Field } from "type-graphql"
 import { ObjectType } from "type-graphql"
 

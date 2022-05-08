@@ -54,7 +54,7 @@ const InputField: React.FC<InputFieldProps> = ({
           />
           {error && (
             <FormErrorMessage ml="auto" w={"fit-content"}>
-              <InfoIcon />
+              <InfoIcon mr="3px"/>
               {error}
             </FormErrorMessage>
           )}

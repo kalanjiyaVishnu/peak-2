@@ -1,20 +1,18 @@
-import { isAuth } from "./User/isAuth"
-import { UserResponse } from "./User/UserResponse"
-import { userInput } from "./User/userInput"
-import { User } from "../entity/User"
+import { hash, verify } from "argon2"
+import MyContext from "src/types/Context"
 import {
   Arg,
   Ctx,
-  FieldResolver,
   Mutation,
   Query,
   Resolver,
-  Root,
-  UseMiddleware,
+  UseMiddleware
 } from "type-graphql"
-import { hash, verify } from "argon2"
-import MyContext from "src/types/Context"
-import { Post } from "../entity/Post"
+import { User } from "../entity/user"
+import { isAuth } from "../utils/isAuth"
+import isValid from "../utils/isValid"
+import { userInput } from "./User/userInput"
+import { UserResponse } from "./User/UserResponse"
 
 @Resolver(() => User)
 export class userResolver {
@@ -24,12 +22,9 @@ export class userResolver {
   }
 
   @Query(() => User, { nullable: true })
-  async Me(@Ctx() { req }: MyContext) {
-    if (!req.session.userId) {
-      return null
-    }
-    const user = await User.findOne({ id: req.session.userId })
-    return user
+  @UseMiddleware(isAuth)
+  Me(@Ctx() { req }: MyContext) {
+    return User.findOne({ id: req.session.userId })
   }
 
   @Mutation(() => UserResponse)
@@ -37,16 +32,13 @@ export class userResolver {
     @Arg("data") input: userInput,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
-    if (!input.name) {
+    const errors = isValid(input)
+    if (errors) {
       return {
-        errors: [
-          {
-            field: "name",
-            message: "what do we call you? null",
-          },
-        ],
+        errors,
       }
     }
+
     const isUserAlreadyExits = await User.find({
       where: { email: input.email },
     })
@@ -61,16 +53,6 @@ export class userResolver {
       }
     }
 
-    if (input.password.length < 4) {
-      return {
-        errors: [
-          {
-            field: "password",
-            message: "password length must be 4",
-          },
-        ],
-      }
-    }
     const hashedPassword = await hash(input.password)
 
     try {
@@ -127,29 +109,24 @@ export class userResolver {
     return { user }
   }
 
-  @UseMiddleware(isAuth)
-  @FieldResolver()
-  async posts(@Root() parent: User): Promise<Post[] | []> {
-    const posts = await Post.find({ where: { userID: parent.id } })
-    if (!posts.length) {
-      return []
-    }
-
-    console.log(parent.posts)
-
-    return posts
-  }
-
   @Mutation(() => Boolean)
-  async logout(@Ctx() { req }: MyContext) {
+  async logout(@Ctx() { req, res }: MyContext) {
     return new Promise((resolve) => {
+      // res.clearCookie("my cookie")
+      var cookie = req.cookies
+      for (var prop in cookie) {
+        if (!cookie.hasOwnProperty(prop)) {
+          continue
+        }
+        res.cookie(prop, "", { expires: new Date(0) })
+      }
       req.session.destroy((err) => {
         if (err) {
           console.log("while destroying req session", err)
+          resolve(false)
         }
         resolve(true)
       })
-
       resolve(false)
     })
   }

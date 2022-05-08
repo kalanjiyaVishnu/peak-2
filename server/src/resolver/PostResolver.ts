@@ -1,16 +1,17 @@
-import { Post } from "./../entity/Post"
-import { isAuth } from "./User/isAuth"
-import { PostInputs } from "./Post/postInputs"
-import MyContext from "../types/Context"
 import {
   Arg,
   Ctx,
+  Int,
   Mutation,
   Query,
   Resolver,
   UseMiddleware,
 } from "type-graphql"
 import { getConnection } from "typeorm"
+import MyContext from "../types/Context"
+import { Post } from "./../entity/post"
+import { PostInputs } from "./Post/postInput"
+import { isAuth } from "../utils/isAuth"
 
 @Resolver()
 export class PostResolver {
@@ -30,7 +31,10 @@ export class PostResolver {
       return false
     }
 
-    return await Post.create({ ...inputs, userID: req.session.userId }).save()
+    return await Post.create({
+      ...inputs,
+      creatorId: req.session.userId,
+    }).save()
   }
 
   @UseMiddleware(isAuth)
@@ -48,27 +52,6 @@ export class PostResolver {
   @UseMiddleware(isAuth)
   @Mutation(() => Post)
   async updatePost(@Arg("input") inputs: PostInputs): Promise<Post> {
-    // if (!inputs.title) {
-    //   return {
-    //     errors: [
-    //       {
-    //         field: "title",
-    //         message: "provide title",
-    //       },
-    //     ],
-    //   }
-    // }
-
-    // if (inputs.body.length > 20) {
-    //   return {
-    //     errors: [
-    //       {
-    //         field: "body",
-    //         message: "make it shorter",
-    //       },
-    //     ],
-    //   }
-    // }
     const property = await this.postRepo.findOne({
       where: { id: inputs.postId },
     })
@@ -79,8 +62,26 @@ export class PostResolver {
     })
   }
 
+  @UseMiddleware(isAuth)
   @Query(() => [Post])
-  async getAllPosts(@Ctx() { req }: MyContext) {
-    return await Post.find({ where: { userID: req.session.userId } })
+  posts(
+    @Arg("limit", () => Int) limit: number,
+    @Arg("cursor", () => String, { nullable: true }) cursor: string
+  ) {
+    const qb = getConnection()
+      .getRepository(Post)
+      .createQueryBuilder("p")
+      .orderBy('"createdAt"', "DESC")
+      .take(limit)
+
+    if (cursor) {
+      qb.where('"createdAt" < :cursor', { cursor: new Date(cursor) })
+    }
+
+    return qb.getMany()
+    // return Post.find({
+    //   where: { creatorId: req.session.userId },
+    //   order: { createdAt: "DESC" },
+    // })
   }
 }

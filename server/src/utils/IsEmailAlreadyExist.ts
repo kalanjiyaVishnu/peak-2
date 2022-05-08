@@ -1,10 +1,10 @@
-import { User } from "../../entity/User"
 import {
   registerDecorator,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from "class-validator"
+import { User } from "src/entity/user"
 
 @ValidatorConstraint({ async: true })
 export class IsUserAlreadyExistConstraint

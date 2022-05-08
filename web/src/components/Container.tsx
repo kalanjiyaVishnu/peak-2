@@ -1,6 +1,7 @@
-import { Box, Flex, FlexProps, useColorMode } from "@chakra-ui/react"
+import { Flex, FlexProps, useColorMode } from "@chakra-ui/react"
 import "@fontsource/poppins"
 import { bgColor, color } from "../utils/color"
+import DarkModeSwitch from "./DarkModeSwitch"
 
 export default ({ children, ...opts }: FlexProps) => {
   const { colorMode } = useColorMode()
@@ -17,6 +18,7 @@ export default ({ children, ...opts }: FlexProps) => {
       {...opts}
     >
       {children}
+      <DarkModeSwitch />
     </Flex>
   )
 }

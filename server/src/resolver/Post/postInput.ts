@@ -13,6 +13,5 @@ export class PostInputs {
   @Field()
   @Length(0, 255, { message: "body must be grater than 0" })
   body: string
-  // @Field(() => [String])
-  // body: string[]
+  
 }

@@ -19,8 +19,8 @@ interface NavProps {
 }
 const Nav: React.FC<NavProps> = ({ children }) => {
   const [{ data, fetching }] = useMeQuery()
-  console.log("in nav --> ",data);
-  
+  console.log("in nav --> ", data)
+
   const { colorMode } = useColorMode()
 
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
@@ -64,6 +64,7 @@ const Nav: React.FC<NavProps> = ({ children }) => {
             {data.Me.name}
           </Text>
         </Box>
+        {children}
         <BellIcon fontSize={"2xl"} />
         <Link href="/login">
           <Button
@@ -72,6 +73,7 @@ const Nav: React.FC<NavProps> = ({ children }) => {
             outline="2px"
             size="sm"
             _focus={{ outline: "none" }}
+            isLoading={logoutFetching}
             onClick={() => {
               console.log("your are logged out")
               logout()

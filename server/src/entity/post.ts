@@ -4,9 +4,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
+import { User } from "./user"
 
 // @ObjectType()
 // @Entity()
@@ -36,10 +38,10 @@ export class Post extends BaseEntity {
 
   @Field()
   @Column("uuid")
-  userID: string
+  creatorId: string
 
   @Field()
-  @Column() 
+  @Column()
   title: string
 
   @Field()
@@ -52,14 +54,14 @@ export class Post extends BaseEntity {
 
   @Field()
   @CreateDateColumn()
-  createdDate: Date
+  createdAt: Date
 
   @Field()
   @UpdateDateColumn()
-  updatedDate: Date
+  updatedAt: Date
   // @Field(() => [Comment], { nullable: true })
   // comments: Comment[]
 
-  // @ManyToOne(() => User, (user) => user.posts)
-  // user: User
+  @ManyToOne(() => User, (User) => User.posts)
+  creator: User
 }

@@ -1,12 +1,14 @@
+import { Button } from "@chakra-ui/react"
+import { Form, Formik } from "formik"
+import { withUrqlClient } from "next-urql"
+import { useRouter } from "next/router"
 import * as React from "react"
 import { DarkModeSwitch, Wrapper } from "../components"
-
-import { Form, Formik } from "formik"
 import InputField from "../components/InputField"
-import { Button } from "@chakra-ui/react"
-import { useRouter } from "next/router"
 import { useRegisterMutation } from "../generated/graphql"
+import createUrqlClient from "../utils/createUrqlClient"
 import toErrMap from "../utils/toErrMap"
+
 const Register: React.FC = () => {
   const [, register] = useRegisterMutation()
   const router = useRouter()
@@ -57,4 +59,4 @@ const Register: React.FC = () => {
   )
 }
 
-export default Register
+export default withUrqlClient(createUrqlClient)(Register)

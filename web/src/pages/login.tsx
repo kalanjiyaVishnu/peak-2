@@ -1,35 +1,25 @@
 import * as React from "react"
 import { DarkModeSwitch, Wrapper } from "../components"
 
-import { Form, Formik } from "formik"
-import InputField from "../components/InputField"
 import { Button } from "@chakra-ui/react"
+import { Form, Formik } from "formik"
+import { withUrqlClient } from "next-urql"
 import { useRouter } from "next/router"
-import { useLoginMutation, useMeQuery } from "../generated/graphql"
+import InputField from "../components/InputField"
+import { useLoginMutation } from "../generated/graphql"
+import createUrqlClient from "../utils/createUrqlClient"
 import toErrMap from "../utils/toErrMap"
-import { useEffect } from "react"
+
 const Login: React.FC = () => {
   const [, login] = useLoginMutation()
-  const [{ fetching, data: MeData }] = useMeQuery()
   const router = useRouter()
-  useEffect(() => {
-    console.log("login --> ", MeData)
-
-    // setTimeout(() => {
-    //   if (MeData) {
-    //     router.push("/home")
-    //   }
-    // }, 3000)
-    return () => {}
-  }, [])
-
   return (
     <Wrapper>
       <Formik
         initialValues={{ email: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           const res = await login(values)
-          console.log(res)
+          // console.log(res)
 
           if (res.data.login.errors) {
             setErrors(toErrMap(res.data.login.errors))
@@ -65,4 +55,4 @@ const Login: React.FC = () => {
   )
 }
 
-export default Login
+export default withUrqlClient(createUrqlClient)(Login)

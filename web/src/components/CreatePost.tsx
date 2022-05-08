@@ -19,6 +19,7 @@ import InputField from "./InputField"
 
 export default function CreatePost({ isOpen, onOpen, onClose }) {
   const [, createPost] = useCreatePostMutation()
+  
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />

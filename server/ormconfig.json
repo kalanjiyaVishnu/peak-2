@@ -5,9 +5,8 @@
     "host": "localhost",
     "port": 5432,
     "database": "peak2",
-    "synchronize": true,
     "entities": ["dist/entity/*.*"],
-    "logging ":true,
-    "log":true
+    "synchronize": true,
+    "logging":true
 }
   
